@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Syrup2525/syrup-kafka.git"
+    "url": "git+https://github.com/Syrup2525/syrup-kafka.git"
   },
   "author": "Syrup (KyungHwan KIM) <rudghks8786@gmail.com>",
   "license": "MIT",
