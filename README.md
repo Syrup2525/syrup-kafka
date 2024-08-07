@@ -48,7 +48,9 @@ const startMain = async () => {
     // - 메시지 전송 및 소비 실행
 
     // 프로세스 종료 전 kafka.exit() 함수를 호출 합니다.
-    kafka.exit()
+    kafka.exit(() => {
+        // kafka.exit 처리 이후 수행되여야 할 코드
+    })
 }
 
 startMain()
@@ -528,7 +530,9 @@ const kafka = require('syrup-kafka')
 
 // - ...
 
-kafka.exit()
+kafka.exit(() => {
+    // kafka.exit 처리 이후 수행되여야 할 코드
+})
 
 // - ...
 ```
@@ -549,19 +553,11 @@ await kafka.init(redisConfig, kafkaConfig)
 process.stdin.resume()
 
 const exitHandler = (options, exitCode) => {
-    kafka.exit()
-
-    if (options.cleanup) {
-        console.log('clean');
-    }
-
-    if (exitCode || exitCode === 0) {
-        console.log(`exitCode: ${exitCode}`);
-    }
-
-    if (options.exit) {
-        process.exit();
-    }
+    kafka.exit(() => {
+        if (options.cleanup) console.log('clean');
+        if (exitCode || exitCode === 0) console.log(`exitCode: ${exitCode}`);
+        if (options.exit) process.exit();
+    })
 }
 
 process.on('exit', exitHandler.bind(null, { cleanup: true }));
