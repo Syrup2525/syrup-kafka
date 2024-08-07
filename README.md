@@ -283,6 +283,22 @@ await kafka.send({
     value: "test message",
 })
 
+// header 정보를 포함한 형태의 메시지 전송
+await kafka.send({
+    topic: "topicA",
+    headers: {
+        example: "header example",
+    }
+})
+
+// Object 형태의 메시지 전송
+await kafka.send({
+    topic: "topicA",
+    value: {
+        example: "example",
+    }
+})
+
 // 토픽의 특정 파티션에 메시지 전송
 await kafka.send({
     topic: "topicB",
@@ -326,8 +342,9 @@ await kafka.send({
 * `topic` 메시지 전송할 토픽 이름입니다. 값이 반드시 있어하며 문자열 형태여야 합니다. 값이 없거나 공백인 경우, 문자열이 아닌경우 `throw - exception` 이 발생합니다.
 * `partitions` 파티션을 지정하여 메시지를 전송하고자 할때 사용합니다. number 배열 형태로 데이터를 입력해야하며, 해당 값이 존재하지 않는 경우 기본 파티셔너를 통해 메시지가 전송됩니다.
 * `arrival` 전송한 데이터를 소비하고자 하는 컨슈머가 [Custom Consumer](#custom-consumer) 로 정의되어 있는경우 [Kafka Config](#kafka-config) 에서 등록한 `clientId` 를 `arrival` 에 등록시 파티션 번호를 명시하지 않아도 해당 [Custom Consumer](#custom-consumer) 가 소비하는 파티션으로 메시지를 전송합니다.
+* `headers` 전송하려는 메시지의 해더 정보 입니다. Object 형색이며 `departure` key 와 `arrival` key 값은 예약어 이므로 사용할 수 없습니다.
 * `key` 전송하려는 key 값 입니다.
-* `value` 전송하려는 메시지 내용 입니다. 별도의 타입이 없으며 원하는 형태로 전송할 수 있습니다.
+* `value` 전송하려는 메시지 내용 입니다. string 혹은 buffer 타입이며 Object 타입으로 전송하는 경우 자동으로 `JSON.stringify` 형태로 전송됩니다.
 * `options` 전송하려는 메시지의 옵션 입니다. 옵션을 사용하지 않을시 생략 가능합니다. `options` 에 대한 각 속성은 [여기](#message-send-options) 를 참고해 주세요.
 
 > `partitions` 와 `arrival` 속성을 동시에 선언한 경우에는 `partitions` 속성이 우선권을 가지며 `arrival` 은 무시됩니다.
@@ -464,7 +481,7 @@ kafka.on(kafka.CALLBACK_TYPE.EACH_MESSAGE, async (topic, partition, message) => 
 
 > `message` 객체의 속성을 정의하고 있습니다.
 > * `key` 파티셔닝에 사용되는 key 값. 자세한 내용은 [key 의 추가적인 설명](#key-의-추가적인-설명) 을 참고해 주세요.
-> * `value` 메시지 내용
+> * `value` 메시지 내용. [send-message](#send-message) 에서 value 를 Object 타입으로 전송한경우 Object 타입으로 자동 파싱됩니다. `JSON.parse`
 > * `headers` 메시지의 헤더 정보 `object`
 >> `headers` 에는 다음 정보가 포함되어 있습니다.
 >> * `departure` 메시지가 생성된 프로듀서의 clientId
