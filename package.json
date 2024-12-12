@@ -1,6 +1,6 @@
 {
   "name": "syrup-kafka",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "This is the kafka util used inside for the syrup project.",
   "engines": {
     "node": ">=14"
